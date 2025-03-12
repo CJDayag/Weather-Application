@@ -1,0 +1,250 @@
+{% extends "weather/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Weather Dashboard</h1>
+    
+    {% if no_location %}
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+            <p>You haven't added any locations yet. <a href="{% url 'location_search' %}" class="underline">Search for a location</a> to get started.</p>
+        </div>
+    {% else %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Current Weather Card -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Current Weather</h2>
+                    <span class="text-sm text-gray-500">{{ location.name }}</span>
+                </div>
+                
+                {% if location %}
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-4xl font-bold">{{ current_weather.temperature }}°C</div>
+                            <div class="text-gray-600 capitalize">{{ current_weather.description }}</div>
+                        </div>
+                        <div>
+                            <div class="flex items-center mb-2">
+                                <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                                </svg>
+                                <span>Humidity: {{ current_weather.humidity }}%</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Wind: {{ current_weather.wind_speed }} m/s</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                                <span>Pressure: {{ current_weather.pressure }} hPa</span>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-12">
+                        <h3 class="text-lg font-medium text-gray-900">No locations added yet</h3>
+                        <p class="mt-2 text-sm text-gray-500">
+                            Start by adding a location to view weather information
+                        </p>
+                        <div class="mt-6">
+                            <a href="{% url 'location_search' %}" 
+                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                Add Your First Location
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Alerts Card -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Weather Alerts</h2>
+                    <a href="{% url 'alerts' %}" class="text-blue-600 hover:text-blue-800 text-sm">Configure</a>
+                </div>
+                
+                {% if alerts %}
+                    <div class="space-y-3">
+                        {% for alert in alerts %}
+                            <div class="bg-red-100 p-3 rounded-md">
+                                <div class="font-medium">{{ alert.message }}</div>
+                                <div class="text-sm text-gray-600">{{ alert.created_at|date:"M d, Y H:i" }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-gray-500">No active alerts</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Historical Chart -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Last 7 Days</h2>
+            <canvas id="historicalChart" height="300"></canvas>
+        </div>
+        
+        <!-- Forecast Chart -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">7-Day Forecast</h2>
+            <canvas id="forecastChart" height="300"></canvas>
+        </div>
+    {% endif %}
+</div>
+{% if not no_location %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Historical chart data
+        const historicalCtx = document.getElementById('historicalChart').getContext('2d');
+
+        const historicalData = {
+            labels: [
+                {% for data in historical_data %}
+                    "{{ data.date|date:'M d' }}",
+                {% endfor %}
+            ],
+            datasets: [
+                {
+                    label: 'Temperature (°C)',
+                    data: [
+                        {% for data in historical_data %}
+                            {{ data.avg_temp }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    tension: 0.3
+                },
+                {
+                    label: 'Humidity (%)',
+                    data: [
+                        {% for data in historical_data %}
+                            {{ data.avg_humidity }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    yAxisID: 'humidity'
+                }
+            ]
+        };
+    
+        console.log("Chart Data:", historicalData); // ✅ Debugging
+    
+        const historicalChart = new Chart(historicalCtx, {
+            type: 'line',
+            data: historicalData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        }
+                    },
+                    humidity: {
+                        position: 'right',
+                        beginAtZero: false,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Humidity (%)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Forecast chart data
+        const forecastCtx = document.getElementById('forecastChart').getContext('2d');
+        const forecastData = {
+            labels: [
+                {% for data in forecast_data %}
+                    '{{ data.date|date:"M d" }}',
+                {% endfor %}
+            ],
+            datasets: [
+                {
+                    label: 'Predicted Temperature (°C)',
+                    data: [
+                        {% for data in forecast_data %}
+                            {{ data.temperature }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 2,
+                    tension: 0.3
+                },
+                {
+                    label: 'Min Temperature (°C)',
+                    data: [
+                        {% for data in forecast_data %}
+                            {{ data.min_temp }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1,
+                    tension: 0.3,
+                    borderDash: [5, 5]
+                },
+                {
+                    label: 'Max Temperature (°C)',
+                    data: [
+                        {% for data in forecast_data %}
+                            {{ data.max_temp }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    tension: 0.3,
+                    borderDash: [5, 5]
+                }
+            ]
+        };
+        
+        const forecastChart = new Chart(forecastCtx, {
+            type: 'line',
+            data: forecastData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        });
+    });
+    </script>
+    {% endif %}
+    {% endblock %}
