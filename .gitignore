@@ -1,0 +1,53 @@
+# Python/Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+db.sqlite3
+media/
+*.log
+*.env
+.env.*
+/venv/
+instance/
+celerybeat-schedule
+
+# Ignore Django migrations cache (optional)
+**/migrations/__pycache__/
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/*.pyd
+
+# Node/Vite (frontend)
+node_modules/
+dist/
+.vite/
+.vscode/
+*.log
+.env
+.env.local
+
+# Python virtual environments
+.venv/
+.env/
+env/
+venv/
+
+# IDE/editor config files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Testing/coverage
+htmlcov/
+.coverage
+*.cover
+.cache/
+pytest_cache/
