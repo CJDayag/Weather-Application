@@ -15,6 +15,7 @@ import ResetPassword from './components/ResetPassword';
 import RouteChangeProgress from "./components/RouteChangeProgress";
 import "sonner/dist/styles.css";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/themeprovider"
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ export default function App() {
   console.log("isAuthenticated:", isAuthenticated);
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="system">
       <BrowserRouter>
       <Toaster position="top-right" />
       <RouteChangeProgress />
@@ -51,6 +53,8 @@ export default function App() {
           )}
         </Routes>
       </BrowserRouter>
+      </ThemeProvider>
     </QueryClientProvider>
+    
   );
 }
