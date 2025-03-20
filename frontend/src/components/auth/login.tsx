@@ -16,7 +16,9 @@ interface LoginFormData {
   password: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+const API_URL = import.meta.env.VITE_API_URL;
+const TOKEN_URL = import.meta.env.VITE_LOGIN_URL;
+const PROFILE_URL = import.meta.env.VITE_PROFILE_URL;
 
 export function LoginPage({
   className,
@@ -41,7 +43,7 @@ export function LoginPage({
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch(`${API_URL}/token/`, {
+      const response = await fetch(`${API_URL}${TOKEN_URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -51,10 +53,10 @@ export function LoginPage({
       if (!response.ok) throw new Error(result.detail || "Login failed");
 
       console.log("Login Response:", result); // Debugging
-      console.log("Full user data fetched from API:", result.user); // NEW: log full user data
+      console.log("Full user data fetched from API:", result.user);
 
       // ✅ Extract username correctly
-      const fullUser = await fetch(`${API_URL}/profile/`, {
+      const fullUser = await fetch(`${API_URL}${PROFILE_URL}`, {
         method: "GET",
         headers: { 
             "Content-Type": "application/json",

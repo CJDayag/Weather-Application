@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Trash2Icon, CirclePlay, CirclePause, PlusIcon } from 'lucide-react';
 
 interface Location {
   id: number;
@@ -25,6 +26,11 @@ interface Alert {
   threshold_value: number;
   is_active: boolean;
 }
+
+const ALERTS = import.meta.env.VITE_ALERTS_URL;
+const CREATE_ALERT = import.meta.env.VITE_CREATE_ALERT_URL;
+const TOGGLE_ALERT = import.meta.env.VITE_ALERT_TOGGLE_URL;
+const DELETE_ALERT = import.meta.env.VITE_DELETE_ALERT_URL;
 
 const Alerts: React.FC = () => {
   const [userLocations, setUserLocations] = useState<Location[]>([]);
@@ -41,7 +47,7 @@ const Alerts: React.FC = () => {
   const fetchAlerts = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await axios.get('/api/alerts/', {
+      const response = await axios.get(`${ALERTS}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +63,7 @@ const Alerts: React.FC = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('access_token');
-      const response = await axios.post('/api/alerts/create/', newAlert, {
+      const response = await axios.post(`${CREATE_ALERT}`, newAlert, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -72,7 +78,7 @@ const Alerts: React.FC = () => {
   const handleToggleAlert = async (alertId: number) => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await axios.post(`/api/alerts/toggle/${alertId}/`, null, {
+      const response = await axios.post(`${TOGGLE_ALERT}${alertId}/`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -87,7 +93,7 @@ const Alerts: React.FC = () => {
   const handleDeleteAlert = async (alertId: number) => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await axios.post(`/api/alerts/delete/${alertId}/`, null, {
+      const response = await axios.post(`${DELETE_ALERT}${alertId}/`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -109,7 +115,7 @@ const Alerts: React.FC = () => {
         </Alert>
       )}
       
-      <Card className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <Card className="rounded-lg shadow-md p-6 mb-6">
         <CardHeader className="space-y-2">
           <CardTitle className="text-xl font-semibold mb-4">Create New Alert</CardTitle>
         </CardHeader>
@@ -185,6 +191,7 @@ const Alerts: React.FC = () => {
             </div>
             <div>
               <Button type="submit" variant="default" className="w-full">
+                <PlusIcon />
                 Create Alert
               </Button>
             </div>
@@ -192,7 +199,7 @@ const Alerts: React.FC = () => {
         </CardContent>
       </Card>
       
-      <Card className="bg-white rounded-lg shadow-md p-6">
+      <Card className="rounded-lg shadow-md p-6">
         <CardHeader className="space-y-2">
           <CardTitle className="text-xl font-semibold mb-4">Your Alerts</CardTitle>
         </CardHeader>
@@ -200,7 +207,7 @@ const Alerts: React.FC = () => {
           {alerts.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
@@ -209,7 +216,7 @@ const Alerts: React.FC = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200">
                   {alerts.map((alert) => (
                     <tr key={alert.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{alert.location}</td>
@@ -225,9 +232,11 @@ const Alerts: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div className="flex space-x-3">
                           <Button onClick={() => handleToggleAlert(alert.id)}>
+                            {alert.is_active ? <CirclePause /> : <CirclePlay />}
                             {alert.is_active ? 'Deactivate' : 'Activate'}
                           </Button>
-                          <Button onClick={() => handleDeleteAlert(alert.id)}>
+                          <Button variant='destructive' onClick={() => handleDeleteAlert(alert.id)}>
+                            <Trash2Icon />
                             Delete
                           </Button>
                         </div>

@@ -29,6 +29,8 @@ interface WeatherData {
   timestamp: string;
 }
 
+const LOCATION = import.meta.env.VITE_DISPLAY_LOCATION_URL;
+
 const LocationsList: React.FC = () => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -42,7 +44,7 @@ const LocationsList: React.FC = () => {
     const fetchLocations = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const response = await axios.get('/api/locations/', {
+        const response = await axios.get(`${LOCATION}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -76,7 +78,7 @@ const LocationsList: React.FC = () => {
       try {
         const token = localStorage.getItem('access_token');
         const csrfToken = getCsrfToken();
-        await axios.delete(`/api/locations/${locationToDelete.id}/`, {
+        await axios.delete(`${LOCATION}${locationToDelete.id}/`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'X-CSRFToken': csrfToken,
@@ -154,7 +156,7 @@ if (loading) {
       <h1 className="text-2xl font-bold mb-4">Locations and Weather Data</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {locations.map((location) => (
-          <div key={location.id} className="bg-white shadow-md rounded-lg p-4">
+          <div key={location.id} className="shadow-md rounded-lg p-4">
             <h2 className="text-xl font-semibold">{location.name}</h2>
             <p className="text-gray-600">Latitude: {location.latitude}</p>
             <p className="text-gray-600">Longitude: {location.longitude}</p>

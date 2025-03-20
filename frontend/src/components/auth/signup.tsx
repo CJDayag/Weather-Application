@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -20,6 +19,9 @@ interface SignupFormData {
   confirmPassword: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL;
+const CSRF_URL = import.meta.env.VITE_CSRF_URL;
+const SIGNUP_URL = import.meta.env.VITE_SIGNUP_URL;
 
 export function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +50,7 @@ export function SignupPage() {
         return;
       }
   
-      const csrfResponse = await fetch("http://localhost:8000/csrf/", {
+      const csrfResponse = await fetch(`${API_URL}${CSRF_URL}`, {
         method: "GET",
         credentials: "include", 
       });
@@ -56,7 +58,7 @@ export function SignupPage() {
       const csrfData = await csrfResponse.json();
       const csrfToken = csrfData.csrfToken;
   
-      const response = await fetch("http://localhost:8000/api/signup/", {
+      const response = await fetch(`${API_URL}${SIGNUP_URL}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,6 +68,9 @@ export function SignupPage() {
         body: JSON.stringify({
           username: data.username,
           password: data.password,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
         }),
       });
   

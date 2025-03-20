@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { FaExclamationTriangle } from 'react-icons/fa';
 import axios from 'axios';
 
+const DASHBOARD_URL = import.meta.env.VITE_DASHBOARD_URL;
+
 export function useAuth() {
     const getToken = useCallback(async () => {
         const accessToken = localStorage.getItem('access_token');
@@ -76,7 +78,7 @@ export function useAuth() {
 }
 
 export async function fetchDashboardData(token: string): Promise<DashboardData> {
-    const response = await axios.get('/api/dashboard/', {
+    const response = await axios.get(`${DASHBOARD_URL}`, {
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -118,6 +120,18 @@ export async function fetchDashboardData(token: string): Promise<DashboardData> 
 }
 
 export default function Dashboard() {
+
+    const [showLocationDialog, setShowLocationDialog] = useState(false);
+
+    useEffect(() => {
+        // Check if the account is newly created
+        const isNewAccount = localStorage.getItem("newAccount");
+        if (isNewAccount) {
+            setShowLocationDialog(true);
+            localStorage.removeItem("newAccount");
+        }
+    }, []);
+
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -227,47 +241,67 @@ export default function Dashboard() {
     const { location: dashboardLocation, current_weather, alerts, historical_data, forecast_data } = dashboardData;
 
     return (
-        <div className="container mx-auto px-4 py-8 space-y-8">
-            
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold mb-6">
-                    Weather Dashboard
-                </h1>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <CurrentWeatherCard 
-                    location={dashboardLocation}
-                    currentWeather={current_weather}
-                />
-                <AlertsCard alerts={alerts} />
-            </div>
+         <>
+            {/* Conditional Location Dialog */}
+            {showLocationDialog && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+                        <h2 className="text-lg font-bold mb-4">Add Your Location</h2>
+                        <p className="mb-4">
+                            Your account is newly created. Please add a location to get started.
+                        </p>
+                        <button
+                            onClick={() => setShowLocationDialog(false)}
+                            className="px-4 py-2 bg-blue-500 text-white rounded"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
-                <Card className='py-6'>
-                    <CardHeader>
-                        <CardTitle>Last 7 Days</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <WeatherChart
-                            data={historical_data}
-                            type="historical"
-                        />
-                    </CardContent>
-                </Card>
+            <div className="container mx-auto px-4 py-8 space-y-8">
+            
+                <div className="flex items-center justify-between">
+                    <h1 className="text-3xl font-bold mb-6">
+                        Weather Dashboard
+                    </h1>
+                </div>
+            
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <CurrentWeatherCard 
+                        location={dashboardLocation}
+                        currentWeather={current_weather}
+                    />
+                    <AlertsCard alerts={alerts} />
+                </div>
 
-                <Card className='py-6'>
-                    <CardHeader>
-                        <CardTitle>7-Day Forecast</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <WeatherChart
-                            data={forecast_data}
-                            type="forecast"
-                        />
-                    </CardContent>
-                </Card>
+                <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+                    <Card className='py-6'>
+                        <CardHeader>
+                            <CardTitle>Last 7 Days</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <WeatherChart
+                                data={historical_data}
+                                type="historical"
+                            />
+                        </CardContent>
+                    </Card>
+
+                    <Card className='py-6'>
+                        <CardHeader>
+                            <CardTitle> 7-Day Forecast </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <WeatherChart
+                                data={forecast_data}
+                                type="forecast"
+                            />
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

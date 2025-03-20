@@ -15,6 +15,11 @@ interface Location {
   longitude: number;
 }
 
+const API = import.meta.env.VITE_API_URL;
+const CSRF_TOKEN = import.meta.env.VITE_CSRF_URL;
+const SEARCH = import.meta.env.VITE_SEARCH_URL;
+const ADD_LOCATION = import.meta.env.VITE_ADD_LOCATION_URL;
+
 const AddUsersLocation = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,7 +30,7 @@ const AddUsersLocation = () => {
   useEffect(() => {
     const getCsrfToken = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/csrf/", {
+        const response = await axios.get(`${API}${CSRF_TOKEN}`, {
           withCredentials: true // Important for CSRF cookie
         });
         setCsrfToken(response.data.csrfToken);
@@ -96,7 +101,7 @@ const AddUsersLocation = () => {
       const token = checkAuth();
       if (!token) throw new Error("Unauthorized");
   
-      const response = await axios.post("http://localhost:8000/api/locations/search/", 
+      const response = await axios.post(`${API}${SEARCH}`, 
         { location_query: searchQuery },
         {
           headers: {
@@ -139,7 +144,7 @@ const AddUsersLocation = () => {
       }
   
       // POST the complete location details to the updated add endpoint.
-      const response = await axios.post("http://localhost:8000/api/locations/add/", 
+      const response = await axios.post(`${API}${ADD_LOCATION}`, 
         {
           name: selectedLocation.name,
           latitude: selectedLocation.latitude,
