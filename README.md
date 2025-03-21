@@ -2,7 +2,7 @@
 
 ## Overview 🌐📊🔍
 
-The Weather Web Application allows users to search for a location to get the latest weather conditions and future weather forecasts. It is designed for regular users who want to stay informed about current and upcoming weather for their desired locations. This application leverages WeatherAPI to fetch real-time weather data and forecasts. 🌦️📅🌡️
+The Weather Web Application allows users to search for a location to get the latest weather conditions and future weather forecasts. It is designed for regular users who want to stay informed about current and upcoming weather for their desired locations. This application leverages WeatherAPI to fetch real-time weather data for forecasts. 🌦️📅🌡️
 
 ### Features 📋✅🛠️
 
