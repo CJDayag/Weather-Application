@@ -148,7 +148,7 @@ VITE_DISPLAY_LOCATION_URL = /api/locations/
 
 ## License 📄🔓✅
 
-This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License. See the [LICENSE](LICENSE) file for more details.
+This work is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International. See the [LICENSE](LICENSE) file for more details.
 
 ---
 
