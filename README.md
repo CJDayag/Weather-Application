@@ -2,7 +2,7 @@
 
 ## Overview 🌐📊🔍
 
-The Weather Web Application allows users to search for a location to get the latest weather conditions and future weather forecasts. It is designed for regular users who want to stay informed about current and upcoming weather for their desired locations. 🌦️📅🌡️
+The Weather Web Application allows users to search for a location to get the latest weather conditions and future weather forecasts. It is designed for regular users who want to stay informed about current and upcoming weather for their desired locations. This application leverages WeatherAPI to fetch real-time weather data for forecasts. 🌦️📅🌡️
 
 ### Features 📋✅🛠️
 
@@ -37,7 +37,7 @@ Ensure the following dependencies are installed on your system:
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone (https://github.com/CJDayag/Weather-Application.git)
    cd weather-web-app
    ```
 
@@ -148,9 +148,8 @@ VITE_DISPLAY_LOCATION_URL = /api/locations/
 
 ## License 📄🔓✅
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License. See the [LICENSE](LICENSE) file for more details.
 
 ---
 
-Feel free to reach out for further assistance or questions about the Weather Web Application. 🌦️❓📧
 
