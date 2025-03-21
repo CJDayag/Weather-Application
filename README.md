@@ -37,7 +37,7 @@ Ensure the following dependencies are installed on your system:
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone (https://github.com/CJDayag/Weather-Application.git)
    cd weather-web-app
    ```
 
