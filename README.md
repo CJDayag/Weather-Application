@@ -152,5 +152,4 @@ This project is licensed under the Creative Commons Attribution-NonCommercial 4.
 
 ---
 
-Feel free to reach out for further assistance or questions about the Weather Web Application. 🌦️❓📧
 
