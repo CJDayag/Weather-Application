@@ -10,6 +10,8 @@ import { EyeIcon, EyeOffIcon, CircleCheckIcon } from "lucide-react";
 import { useId } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { TermsDialog } from "@/components/TermsDialog";
+import { PrivacyDialog } from "@/components/PrivacyDialog";
 
 interface LoginFormData {
   username: string;
@@ -201,7 +203,7 @@ export function LoginPage({
                   className="underline underline-4 hover:text-primary"
                 >
                   {linkLoading ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black inline-block" />
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 inline-block" />
                   ) : (
                     "Sign up"
                   )}
@@ -220,8 +222,8 @@ export function LoginPage({
         </CardContent>
       </Card>
       <div className="text-muted-foreground text-center text-xs mt-4">
-        By clicking continue, you agree to our <a href="#" className="underline hover:text-primary">Terms of Service</a>{" "}
-        and <a href="#" className="underline hover:text-primary">Privacy Policy</a>.
+        By clicking continue, you agree to our <TermsDialog />{" "}
+        and <PrivacyDialog />.
       </div>
     </div>
   </div>
