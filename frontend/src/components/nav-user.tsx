@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import ProfileDialog from "@/components/ProfileDialog";
 
 import { toast } from "sonner";
 
@@ -159,10 +160,7 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {/* Profile Link */}
-            <DropdownMenuItem className="cursor-pointer" onClick={() => navigate("/profile")}>
-              <CircleUser />
-              Profile
-            </DropdownMenuItem>
+            <ProfileDialog />
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               <LogOut />
