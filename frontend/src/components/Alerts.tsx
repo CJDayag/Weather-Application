@@ -172,7 +172,7 @@ const Alerts: React.FC = () => {
               </div>
             </div>
             <div className="*:not-first:mt-2">
-              <Label htmlFor={"threshold_value"} className="block text-sm font-medium text-gray-700 mb-1">Threshold Value</Label>
+              <Label htmlFor={"threshold_value"} className="block text-sm font-medium mb-1">Threshold Value</Label>
               <div className="relative">
                 <Input
                   type="number"
@@ -209,19 +209,19 @@ const Alerts: React.FC = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Threshold</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Location</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Condition</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Threshold</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {alerts.map((alert) => (
                     <tr key={alert.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{alert.location}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{alert.condition}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{alert.threshold_value}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{alert.location}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm ">{alert.condition}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm ">{alert.threshold_value}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {alert.is_active ? (
                           <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
@@ -229,7 +229,7 @@ const Alerts: React.FC = () => {
                           <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Inactive</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <div className="flex space-x-3">
                           <Button onClick={() => handleToggleAlert(alert.id)}>
                             {alert.is_active ? <CirclePause /> : <CirclePlay />}
