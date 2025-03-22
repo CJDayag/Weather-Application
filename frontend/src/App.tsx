@@ -24,8 +24,8 @@ export default function App() {
   console.log("isAuthenticated:", isAuthenticated);
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system">
       <BrowserRouter>
+      <ThemeProvider>
       <Toaster position="top-right" />
       <RouteChangeProgress />
         <Routes>
@@ -38,7 +38,6 @@ export default function App() {
           {isAuthenticated ? (
             <Route element={<AuthLayout />}>
               <Route path="/" element={<Navigate to="/weather/dashboard" replace />} />
-              <Route path="/profile" element={<Profile />} />
               <Route path="/weather">
                 <Route path="dashboard" element={<WeatherDashboard />} />
                 <Route path="add-location" element={<AddUsersLocation />} />
@@ -52,8 +51,8 @@ export default function App() {
             <Route path="*" element={<Navigate to="/login" replace />} />
           )}
         </Routes>
+        </ThemeProvider>
       </BrowserRouter>
-      </ThemeProvider>
     </QueryClientProvider>
     
   );
