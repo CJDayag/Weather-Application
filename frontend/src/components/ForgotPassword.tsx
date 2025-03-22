@@ -90,9 +90,13 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <Card className="max-w-md mx-auto mt-10 py-6">
+    <div className="min-h-screen flex items-center justify-center">
+    <Card className="max-w-md w-full mx-4 py-6">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">Forgot Password</CardTitle>
+        <p className="text-sm text-muted-foreground">
+          Enter your email address and we'll send you a link to reset your password.
+        </p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -121,6 +125,7 @@ const ForgotPassword: React.FC = () => {
         </form>
       </CardContent>
     </Card>
+  </div>
   );
 };
 
