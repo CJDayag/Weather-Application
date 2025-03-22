@@ -158,8 +158,8 @@ if (loading) {
         {locations.map((location) => (
           <div key={location.id} className="shadow-md rounded-lg p-4">
             <h2 className="text-xl font-semibold">{location.name}</h2>
-            <p className="text-gray-600">Latitude: {location.latitude}</p>
-            <p className="text-gray-600">Longitude: {location.longitude}</p>
+            <p >Latitude: {location.latitude}</p>
+            <p >Longitude: {location.longitude}</p>
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant='outline' className='mt-4'>View Weather Details</Button>
@@ -178,28 +178,28 @@ if (loading) {
                       />
                       
                       <p className="text-3xl font-bold">{location.latest_weather.temperature}°C</p>
-                      <p className="text-gray-600">{location.latest_weather.description}</p>
+                      <p>{location.latest_weather.description}</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <FaTemperatureLow className="text-gray-600" />
-                      <p className="text-gray-600">Feels like: {location.latest_weather.feels_like}°C</p>
+                      <FaTemperatureLow/>
+                      <p>Feels like: {location.latest_weather.feels_like}°C</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <FaTint className="text-gray-600" />
-                      <p className="text-gray-600">Humidity: {location.latest_weather.humidity}%</p>
+                      <FaTint/>
+                      <p>Humidity: {location.latest_weather.humidity}%</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <FaWind className="text-gray-600" />
-                      <p className="text-gray-600">Wind Speed: {location.latest_weather.wind_speed} m/s</p>
+                      <FaWind />
+                      <p >Wind Speed: {location.latest_weather.wind_speed} m/s</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <FaCompressArrowsAlt className="text-gray-600" />
-                      <p className="text-gray-600">Pressure: {location.latest_weather.pressure} hPa</p>
+                      <FaCompressArrowsAlt/>
+                      <p >Pressure: {location.latest_weather.pressure} hPa</p>
                     </div>
-                    <p className="text-gray-600 text-sm">Last updated: {new Date(location.latest_weather.timestamp).toLocaleString()}</p>
+                    <p >Last updated: {new Date(location.latest_weather.timestamp).toLocaleString()}</p>
                   </div>
                 ) : (
-                  <p className="text-gray-600 mt-4">No weather data available</p>
+                  <p >No weather data available</p>
                 )}
                 <DialogClose asChild>
                   <Button>Close</Button>
