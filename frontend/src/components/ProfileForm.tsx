@@ -123,7 +123,26 @@ function ProfileFormContent({ user }: { user: User }) {
         }
       );
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      alert("Profile saved!");
+      const msg = "Profile saved!";
+      const toastId = toast.custom(() => (
+        <div className="bg-background text-foreground w-full rounded-md border px-4 py-3 shadow-lg sm:w-[var(--width)]">
+            <div className="flex gap-2">
+                <div className="flex grow gap-3">
+                    <CircleCheckIcon
+                        className="mt-0.5 shrink-0 text-emerald-500"
+                        size={16}
+                        aria-hidden="true"
+                    />
+                    <div className="flex grow justify-between gap-12">
+                        {msg}
+                    </div>
+                </div>
+            </div>
+        </div>
+    ));
+    setTimeout(() => {
+      toast.dismiss(toastId);
+  }, 3000);
       window.location.reload();
     } catch (error) {
       console.error(error);
@@ -137,8 +156,6 @@ function ProfileFormContent({ user }: { user: User }) {
       onSubmit={handleSave}
       className="w-full max-w-md mt-8 space-y-6 ml-2"
     >
-
-
       <div>
         <Avatar
           previewUrl={displayedAvatar}
