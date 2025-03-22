@@ -102,22 +102,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
       <button
-        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-accent"
-        aria-label="Toggle theme"
-      >
-        {theme === "light" ? (
-          <>
-            <Moon className="h-[1.2rem] w-[1.2rem] shrink-0" />
-            <span className="truncate text-sm">Dark Mode</span>
-          </>
-        ) : (
-          <>
-            <Sun className="h-[1.2rem] w-[1.2rem] shrink-0" />
-            <span className="truncate text-sm">Light Mode</span>
-          </>
-        )}
-      </button>
+          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-accent"
+          aria-label="Toggle theme"
+        >
+          {theme === "dark" ? (
+            <>
+              <Sun className="h-[1.2rem] w-[1.2rem] shrink-0" />
+              <span className="truncate text-sm">Light Mode</span>
+            </>
+          ) : (
+            <>
+              <Moon className="h-[1.2rem] w-[1.2rem] shrink-0" />
+              <span className="truncate text-sm">Dark Mode</span>
+            </>
+          )}
+        </button>
         <NavUser />
       </SidebarFooter>
       <SidebarRail />
