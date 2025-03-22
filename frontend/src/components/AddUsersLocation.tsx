@@ -279,7 +279,7 @@ const AddUsersLocation = () => {
             </div>
           </form>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+          <h2 className="text-2xl font-semibold mb-6">
             Search Results
           </h2>
 
@@ -297,14 +297,14 @@ const AddUsersLocation = () => {
               <div
                 // Using combination of id and index as key for uniqueness
                 key={`${location.id}-${index}`}
-                className="border rounded-lg p-4 hover:bg-gray-50"
+                className="border rounded-lg p-4"
               >
                 <div className="flex justify-between items-center flex-wrap gap-4">
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900">
+                    <h3 className="text-lg font-medium">
                       {location.name}
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm">
                       Latitude: {location.latitude ? Number(location.latitude).toFixed(4) : "N/A"}{" "}
                       Longitude: {location.longitude ? Number(location.longitude).toFixed(4) : "N/A"}
                     </p>
