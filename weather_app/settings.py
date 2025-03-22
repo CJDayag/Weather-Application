@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-from celery.schedules import crontab
 import os
 from dotenv import load_dotenv
 
@@ -139,33 +138,6 @@ WEATHER_API_KEY = os.getenv('WEATHER_API')  # Add to your environment variables
 WEATHER_API_URL = 'https://api.weatherapi.com/v1/current.json'
 CACHE_TTL = 3600 
 
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_BROKER_URL')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
-BROKER_CONNECTION_RETRY_ON_STARTUP = True
-
-# Add these for better error handling
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
-
-CELERY_BEAT_SCHEDULE = {
-    'fetch-weather-data': {
-        'task': 'weather.tasks.fetch_all_weather_data',
-        'schedule': timedelta(minutes=60),  # Changed to hourly
-    },
-    'check-weather-alerts': {
-        'task': 'weather.tasks.check_weather_alerts',
-        'schedule': timedelta(minutes=30),
-    },
-    'fetch-historical-data': {
-        'task': 'weather.tasks.fetch_all_historical_weather_data',
-        'schedule': timedelta(hours=24),
-        'kwargs': {'days': 7}
-    }
-}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
