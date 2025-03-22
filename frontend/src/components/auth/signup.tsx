@@ -9,6 +9,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { TermsDialog } from "@/components/TermsDialog";
+import { PrivacyDialog } from "@/components/PrivacyDialog";
 
 interface SignupFormData {
   firstName: string;
@@ -272,7 +274,7 @@ export function SignupPage() {
                     className="underline underline-offset-4 hover:text-primary"
                   >
                     {linkLoading ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black inline-block" />
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 inline-block" />
                     ) : (
                       "Sign in"
                     )}
@@ -284,8 +286,8 @@ export function SignupPage() {
         </Card>
         <div className="text-muted-foreground text-center text-xs mt-4">
           By clicking continue, you agree to our{" "}
-          <a href="#" className="underline hover:text-primary">Terms of Service</a>{" "}
-          and <a href="#" className="underline hover:text-primary">Privacy Policy</a>.
+          <TermsDialog />{" "}
+          and <PrivacyDialog />.
         </div>
       </div>
     </div>
