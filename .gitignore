@@ -13,6 +13,7 @@ media/
 /venv/
 instance/
 celerybeat-schedule
+env/
 
 # Ignore Django migrations cache (optional)
 **/migrations/__pycache__/
