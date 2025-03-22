@@ -85,26 +85,26 @@ const LocationsList: React.FC = () => {
           },
         });
         setLocations(locations.filter(location => location.id !== locationToDelete.id));
-      const msg = 'Location deleted successfully';
-      const toastId = "deleteLocationSuccess";
-              toast.custom(() => (
-                <div className="bg-background text-foreground w-full rounded-md border px-4 py-3 shadow-lg sm:w-[var(--width)]">
-                    <div className="flex gap-2">
-                        <div className="flex grow gap-3">
-                            <CircleCheckIcon
-                                className="mt-0.5 shrink-0 text-emerald-500"
-                                size={16}
-                                aria-hidden="true"
-                            />
-                            <div className="flex grow justify-between gap-12">
-                            <p className="text-sm">{msg}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ),
-            { id: toastId, duration: 2000 }
-          );
+        const msg = 'Location deleted successfully';
+        const toastId = "deleteLocationSuccess";
+                toast.custom(() => (
+                  <div className="bg-background text-foreground w-full rounded-md border px-4 py-3 shadow-lg sm:w-[var(--width)]">
+                      <div className="flex gap-2">
+                          <div className="flex grow gap-3">
+                              <CircleCheckIcon
+                                  className="mt-0.5 shrink-0 text-emerald-500"
+                                  size={16}
+                                  aria-hidden="true"
+                              />
+                              <div className="flex grow justify-between gap-12">
+                              <p className="text-sm">{msg}</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              ),
+              { id: toastId, duration: 2000 }
+            );
       setDeleteDialogOpen(false);
     } catch (err) {
       const msg = 'Failed to delete location';
