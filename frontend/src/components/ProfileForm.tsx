@@ -26,11 +26,12 @@ interface User {
   avatar: string | null;
 }
 
-interface ProfileFormProps {
-  onClose: () => void;
-}
+const API = import.meta.env.VITE_API_URL;
+const UPDATE_PROFILE = import.meta.env.VITE_PROFILE_UPDATE_URL;
+const PROFILE = import.meta.env.VITE_PROFILE_URL;
 
-export default function ProfileForm({ onClose }: ProfileFormProps) {
+
+export default function ProfileForm() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +43,7 @@ export default function ProfileForm({ onClose }: ProfileFormProps) {
           console.error("No access token found.");
           return;
         }
-        const response = await axios.get("http://127.0.0.1:8000/api/profile/", {
+        const response = await axios.get(`${API}${PROFILE}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUser(response.data);
@@ -113,7 +114,7 @@ function ProfileFormContent({ user }: { user: User }) {
         formData.append("avatar", fileInputRef.current.files[0]);
       }
       const response = await axios.patch(
-        "http://127.0.0.1:8000/api/profile/update/",
+        `${API}${UPDATE_PROFILE}`,
         formData,
         {
           headers: {
