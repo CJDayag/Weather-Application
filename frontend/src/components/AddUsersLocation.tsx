@@ -295,9 +295,8 @@ const AddUsersLocation = () => {
           <div className="grid gap-4">
             {locations.map((location, index) => (
               <div
-                // Using combination of id and index as key for uniqueness
                 key={`${location.id}-${index}`}
-                className="border rounded-lg p-4"
+                className="border rounded-lg p-4 hover:bg-[var(--hover-primary)] "
               >
                 <div className="flex justify-between items-center flex-wrap gap-4">
                   <div>
@@ -328,7 +327,7 @@ const AddUsersLocation = () => {
             ))}
           </div>
           ) : searchQuery ? (
-            <p className="text-gray-500">No locations found matching your search.</p>
+            <p>No locations found matching your search.</p>
           ) : null}
         </CardContent>
       </Card>
