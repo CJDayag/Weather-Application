@@ -32,7 +32,7 @@ export default function ProfileDialog() {
           </DialogDescription>
         </DialogHeader>
         
-        <ProfileForm onClose={() => setOpen(false)} />
+        <ProfileForm />
       </DialogContent>
     </Dialog>
   );
