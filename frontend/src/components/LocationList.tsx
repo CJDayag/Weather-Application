@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import 'react-toastify/dist/ReactToastify.css';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { CircleX, CircleCheckIcon } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 
 interface Location {
   id: number;
@@ -156,10 +157,15 @@ if (loading) {
       <h1 className="text-2xl font-bold mb-4">Locations and Weather Data</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {locations.map((location) => (
-          <div key={location.id} className="shadow-md rounded-lg p-4">
+          <Card key={location.id} className="py-6">
+            <CardHeader>
             <h2 className="text-xl font-semibold">{location.name}</h2>
+            </CardHeader>
+            <CardContent>
             <p >Latitude: {location.latitude}</p>
             <p >Longitude: {location.longitude}</p>
+            </CardContent>
+            <CardFooter>
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant='outline' className='mt-4'>View Weather Details</Button>
@@ -216,7 +222,8 @@ if (loading) {
             >
               Delete
             </Button>
-          </div>
+            </CardFooter>
+          </Card>
         ))}
       </div>
       {deleteDialogOpen && (
