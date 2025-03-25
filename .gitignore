@@ -35,6 +35,7 @@ dist/
 .env/
 env/
 venv/
+Github-Weather-Application/
 
 # IDE/editor config files
 .idea/
