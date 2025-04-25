@@ -134,7 +134,7 @@ class ForecastAPIView(APIView):
         historical_data = list(
             HistoricalWeatherData.objects.filter(location=location)
             .order_by('date')
-            .values('date', 'avg_temp', 'avg_humidity', 'avg_wind_speed', 'total_precip_mm')
+            .values('date', 'avg_temp', 'avg_humidity', 'avg_wind_speed', 'total_precip_mm', 'most_common_description')
         )
 
         if len(historical_data) < 14:  # Ensure enough historical data
@@ -143,7 +143,8 @@ class ForecastAPIView(APIView):
         # Prepare DataFrame for Prophet
         df = pd.DataFrame(historical_data)
         df.rename(columns={'date': 'ds', 'avg_temp': 'y', 'avg_humidity': 'humidity', 
-                           'avg_wind_speed': 'wind_speed', 'total_precip_mm': 'precipitation'}, inplace=True)
+                        'avg_wind_speed': 'wind_speed', 'total_precip_mm': 'precipitation', 
+                        'most_common_description': 'description'}, inplace=True)
 
         # Clip extreme temperature values (outlier removal)
         df['y'] = df['y'].clip(lower=df['y'].quantile(0.01), upper=df['y'].quantile(0.99))
@@ -178,16 +179,42 @@ class ForecastAPIView(APIView):
 
         # Extract relevant forecast data
         forecast = forecast.tail(days)[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
-        forecast_data = [
-            {
+        
+        # Generate weather descriptions based on forecasted temperature
+        forecast_data = []
+        for _, row in forecast.iterrows():
+            temp = row['yhat']
+            precipitation = future['precipitation'].iloc[-1]  # Get precipitation value
+            
+            # Determine weather description based on temperature and precipitation
+            if precipitation > 5:
+                description = "Rainy"
+            elif precipitation > 1:
+                description = "Drizzle"
+            elif temp > 30:
+                description = "Sunny"
+            elif temp > 25:
+                description = "Clear"
+            elif temp > 20:
+                description = "Partly cloudy"
+            elif temp > 15:
+                description = "Cloudy"
+            elif temp > 10:
+                description = "Overcast"
+            elif temp > 5:
+                description = "Foggy"
+            elif temp > 0:
+                description = "Snowy"
+            else:
+                description = "Freezing"
+            
+            forecast_data.append({
                 'date': row['ds'].date(),
                 'temperature': round(row['yhat'], 1),
                 'min_temp': round(row['yhat_lower'], 1),
                 'max_temp': round(row['yhat_upper'], 1),
-            }
-            for _, row in forecast.iterrows()
-        ]
-
+                'description': description,
+            })
         return forecast_data
 
 class WeatherHistoryAPIView(APIView):
