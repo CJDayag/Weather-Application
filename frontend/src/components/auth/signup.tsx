@@ -285,7 +285,7 @@ export function SignupPage() {
           </CardContent>
         </Card>
         <div className="text-muted-foreground text-center text-xs mt-4">
-          By clicking continue, you agree to our{" "}
+          By Creating an Account, you agree to our{" "}
           <TermsDialog />{" "}
           and <PrivacyDialog />.
         </div>

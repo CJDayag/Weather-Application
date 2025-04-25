@@ -29,6 +29,7 @@ export interface ForecastData {
     temperature: number;
     min_temp: number;
     max_temp: number;
+    description: string;
 }
 
 export interface Location {
