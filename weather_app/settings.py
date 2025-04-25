@@ -152,12 +152,12 @@ STATICFILES_DIRS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    os.getenv('FRONTEND_URL'),  # Your frontend URL
-    os.getenv('FRONTEND_URL_LOCAL')   # If you're testing locally
+    os.getenv('FRONTEND_URL'),
+    os.getenv('FRONTEND_URL_LOCAL')
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    os.getenv('CSRF_TRUSTED_ORIGINS'),  # Your Vite/React frontend
+    os.getenv('CSRF_TRUSTED_ORIGINS'),
 ]
 
 CSRF_COOKIE_HTTPONLY = False 
