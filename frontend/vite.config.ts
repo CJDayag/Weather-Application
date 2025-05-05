@@ -26,5 +26,5 @@ export default defineConfig({
       }
     }
   },
-  base: process.env.NODE_ENV === 'production' ? '/react-vite/' : '/',
+  base: '/',
 })
