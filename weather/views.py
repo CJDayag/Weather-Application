@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+import os
 from weather.models import AlertNotification, AlertThreshold, Location, WeatherData, UserLocation, WeatherForecast, HistoricalWeatherData
 import pandas as pd
+import numpy as np
 from prophet import Prophet
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -25,6 +27,9 @@ from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
+import joblib
+from tensorflow.keras.models import load_model
+from weather.services.forecast_service import ForecastService
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +76,8 @@ class DashboardAPIView(APIView):
             ).order_by('date')
 
             # Generate forecast data
-            forecast_data = ForecastAPIView.generate_forecast(None, location, days=7)
+            forecast_service = ForecastService()
+            forecast_data = forecast_service.generate_forecast(location, days=7)
 
             # Serialize the data
             alerts_data = [{
@@ -116,6 +122,17 @@ logger = logging.getLogger(__name__)
 
 class ForecastAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    
+    # Class-level cache (only load once)
+    lstm_model = None
+    scaler = None
+
+    def load_lstm_model(self):
+        model_path = os.path.join(settings.BASE_DIR, 'weather_forecast_lstm.h5')
+        scaler_path = os.path.join(settings.BASE_DIR, 'weather_scaler.save')
+
+        self.lstm_model = load_model(model_path, compile=False)
+        self.scaler = joblib.load(scaler_path)
 
     def get(self, request, location_id, days):
         if days not in [3, 5, 7]:
@@ -130,92 +147,84 @@ class ForecastAPIView(APIView):
         return Response({'forecast': forecast_data}, status=status.HTTP_200_OK)
 
     def generate_forecast(self, location, days=7):
+        self.load_lstm_model()
+        
         # Fetch historical data
         historical_data = list(
             HistoricalWeatherData.objects.filter(location=location)
             .order_by('date')
-            .values('date', 'avg_temp', 'avg_humidity', 'avg_wind_speed', 'total_precip_mm', 'most_common_description')
+            .values('date', 'avg_temp', 'avg_humidity', 'avg_wind_speed', 'total_precip_mm', 'location')
         )
 
-        if len(historical_data) < 14:  # Ensure enough historical data
+        if len(historical_data) < 30:  # Minimum 30 days required
             return []
 
-        # Prepare DataFrame for Prophet
         df = pd.DataFrame(historical_data)
-        df.rename(columns={'date': 'ds', 'avg_temp': 'y', 'avg_humidity': 'humidity', 
-                        'avg_wind_speed': 'wind_speed', 'total_precip_mm': 'precipitation', 
-                        'most_common_description': 'description'}, inplace=True)
 
-        # Clip extreme temperature values (outlier removal)
-        df['y'] = df['y'].clip(lower=df['y'].quantile(0.01), upper=df['y'].quantile(0.99))
+        # Select relevant features
+        features = ['avg_temp', 'avg_humidity', 'avg_wind_speed', 'total_precip_mm']
+        input_data = df[features].values[-30:]  # Last 30 days
 
-        # Initialize Prophet model with the same settings as API
-        model = Prophet(
-            growth='linear',
-            changepoint_prior_scale=0.05,  # Matches API flexibility
-            seasonality_prior_scale=5.0,
-            yearly_seasonality=False,
-            weekly_seasonality=True
-        )
+        # Normalize the input
+        input_scaled = self.scaler.transform(input_data)
+        input_scaled = np.expand_dims(input_scaled, axis=0)  # Shape: (1, 30, 4)
 
-        # Add same regressors as API
-        model.add_regressor('humidity')
-        model.add_regressor('wind_speed')
-        model.add_regressor('precipitation')
-
-        # Fit the model
-        model.fit(df)
-
-        # Create future dataframe
-        future = model.make_future_dataframe(periods=days+1)
-        
-        # Use the latest available values for the regressors
-        future['humidity'] = df['humidity'].iloc[-1]
-        future['wind_speed'] = df['wind_speed'].iloc[-1]
-        future['precipitation'] = df['precipitation'].iloc[-1]
-
-        # Generate forecast
-        forecast = model.predict(future)
-
-        # Extract relevant forecast data
-        forecast = forecast.tail(days)[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
-        
-        # Generate weather descriptions based on forecasted temperature
         forecast_data = []
-        for _, row in forecast.iterrows():
-            temp = row['yhat']
-            precipitation = future['precipitation'].iloc[-1]  # Get precipitation value
-            
-            # Determine weather description based on temperature and precipitation
-            if precipitation > 5:
-                description = "Rainy"
-            elif precipitation > 1:
-                description = "Drizzle"
-            elif temp > 30:
-                description = "Sunny"
-            elif temp > 25:
-                description = "Clear"
-            elif temp > 20:
-                description = "Partly cloudy"
-            elif temp > 15:
-                description = "Cloudy"
-            elif temp > 10:
-                description = "Overcast"
-            elif temp > 5:
-                description = "Foggy"
-            elif temp > 0:
-                description = "Snowy"
-            else:
-                description = "Freezing"
-            
+        current_input = input_scaled
+
+        from datetime import timedelta
+        last_date = df['date'].iloc[-1]
+
+        for i in range(days):
+            # Predict next step (still scaled)
+            pred_scaled = self.lstm_model.predict(current_input)[0][0]
+
+            # Prepare next input by updating temperature
+            next_features = np.copy(current_input[0][-1])
+            next_features[0] = pred_scaled  # Replace only temperature
+            next_input = next_features.reshape(1, -1)
+
+            # Inverse scale to get real-world values
+            actual_values = self.scaler.inverse_transform(next_input)
+            real_temp = actual_values[0][0]  # Extract actual temperature
+
+            # Append forecast result
             forecast_data.append({
-                'date': row['ds'].date(),
-                'temperature': round(row['yhat'], 1),
-                'min_temp': round(row['yhat_lower'], 1),
-                'max_temp': round(row['yhat_upper'], 1),
-                'description': description,
+                'date': (last_date + timedelta(days=i+1)),
+                'location': location.name,
+                'temperature': round(real_temp, 1),
+                'min_temp': round(real_temp - 2, 1),
+                'max_temp': round(real_temp + 2, 1),
+                'description': self.get_weather_description(real_temp),
             })
+
+            # Update the input sequence (sliding window approach)
+            updated_features_scaled = np.copy(current_input[0][-1])
+            updated_features_scaled[0] = pred_scaled  # Predicted temp (still scaled)
+
+            next_sequence = np.vstack((current_input[0][1:], updated_features_scaled))
+            current_input = np.expand_dims(next_sequence, axis=0)
+
         return forecast_data
+
+
+    def get_weather_description(self, temp):
+        if temp > 30:
+            return "Sunny"
+        elif temp > 25:
+            return "Clear"
+        elif temp > 20:
+            return "Partly cloudy"
+        elif temp > 15:
+            return "Cloudy"
+        elif temp > 10:
+            return "Overcast"
+        elif temp > 5:
+            return "Foggy"
+        elif temp > 0:
+            return "Snowy"
+        else:
+            return "Freezing"
 
 class WeatherHistoryAPIView(APIView):
     permission_classes = [IsAuthenticated]

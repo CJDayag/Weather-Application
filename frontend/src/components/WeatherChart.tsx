@@ -55,13 +55,12 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ data, type }) => {
   } satisfies ChartConfig;
 
   // Format the date labels for better display
-  const formattedData = data.map(item => ({
-    ...item,
-    date: new Date(item.date).toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric' 
-    })
-  }));
+  const formattedData = data.map((item) => ({
+      ...item,
+      date: typeof item.date === 'string' 
+        ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        : (item.date as Date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    }));
 
   // Function to check if this is forecast data
   const isForecastData = (data: any[]): data is ForecastData[] => {
@@ -160,7 +159,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ data, type }) => {
             yAxisId="temp"
             dataKey="min_temp"
             type="monotone"
-            stroke="var(--chart-5)"
+            stroke={type === "historical" ? "var(--chart-2)" : "var(--chart-5)"}
             strokeWidth={2}
             dot={{ r: 3 }}
             activeDot={{ r: 5 }}
@@ -169,7 +168,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ data, type }) => {
             yAxisId="temp"
             dataKey="max_temp"
             type="monotone"
-            stroke="var(--chart-3)"
+            stroke={type === "historical" ? "var(--chart-3)" : "var(--chart-6)"}
             strokeWidth={2}
             dot={{ r: 3 }}
             activeDot={{ r: 5 }}
