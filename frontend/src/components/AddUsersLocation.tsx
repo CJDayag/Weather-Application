@@ -171,7 +171,6 @@ const AddUsersLocation = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center">
-            <Globe className="mr-2 h-7 w-7 text-primary" />
             Search Locations
           </h1>
           <p className="text-muted-foreground mt-1">
