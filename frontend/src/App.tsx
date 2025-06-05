@@ -10,9 +10,13 @@ import WeatherHistory from "./components/WeatherHistory";
 import Alerts from "./components/Alerts";
 import LocationList from "./components/LocationList";
 import Forecast from './components/WeatherForecast';
+import WeatherMapPage from './components/weather/WeatherMapPage';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import RouteChangeProgress from "./components/RouteChangeProgress";
+import ErrorPage from "./components/ErrorPage";
+import NotFound from "./components/NotFound";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/themeprovider"
 
@@ -20,37 +24,47 @@ const queryClient = new QueryClient();
 
 export default function App() {
   const isAuthenticated = localStorage.getItem("access_token") !== null;
-  console.log("isAuthenticated:", isAuthenticated);
+  
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-      <ThemeProvider>
-      <Toaster position="top-right" />
-      <RouteChangeProgress />
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
-          {/* Protected Routes */}
-          {isAuthenticated ? (
-            <Route element={<AuthLayout />}>
-              <Route path="/" element={<Navigate to="/weather/dashboard" replace />} />
-              <Route path="/weather">
-                <Route path="dashboard" element={<WeatherDashboard />} />
-                <Route path="add-location" element={<AddUsersLocation />} />
-                <Route path="history" element={<WeatherHistory />} />
-                <Route path="alerts" element={<Alerts />} />
-                <Route path="locations" element={<LocationList />} />
-                <Route path="forecast" element={<Forecast />} />
-              </Route>
-            </Route>
-          ) : (
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          )}
-        </Routes>
-        </ThemeProvider>
+        <ErrorBoundary>
+          <ThemeProvider>
+            <Toaster position="top-right" />
+            <RouteChangeProgress />
+            
+            <Routes>
+              {/* Error Routes */}
+              <Route path="/error" element={<ErrorPage />} />
+              
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
+              
+              {/* Protected Routes */}
+              {isAuthenticated ? (
+                <Route element={<AuthLayout />}>
+                  <Route path="/" element={<Navigate to="/weather/dashboard" replace />} />
+                  <Route path="/weather">
+                    <Route path="dashboard" element={<WeatherDashboard />} />
+                    <Route path="add-location" element={<AddUsersLocation />} />
+                    <Route path="history" element={<WeatherHistory />} />
+                    <Route path="alerts" element={<Alerts />} />
+                    <Route path="locations" element={<LocationList />} />
+                    <Route path="forecast" element={<Forecast />} />
+                    <Route path="map" element={<WeatherMapPage />} />
+                  </Route>
+                  {/* Catch-all route for authenticated users */}
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              ) : (
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              )}
+            </Routes>
+          </ThemeProvider>
+        </ErrorBoundary>
       </BrowserRouter>
     </QueryClientProvider>
   );
