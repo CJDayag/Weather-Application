@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import WeatherChart from '@/components/WeatherChart';
 import CurrentWeatherCard from '@/components/CurrentWeatherCard';
@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { DashboardData } from '../types/weather';
 import { CircleCheckIcon, CircleX } from 'lucide-react';
 import { toast } from "sonner";
-import { FaExclamationTriangle } from 'react-icons/fa';
+import ErrorFallback from '@/components/ErrorFallback';
 import axios from 'axios';
 
 const DASHBOARD_URL = import.meta.env.VITE_DASHBOARD_URL;
@@ -215,15 +215,8 @@ export default function Dashboard() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
           </div>
         );
-      }
-
-    if (error) {
-        return (
-          <div className="max-w-md mx-auto my-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md flex items-center space-x-2">
-            <FaExclamationTriangle className="w-6 h-6" />
-            <span>{error}</span>
-          </div>
-        );
+      }    if (error) {
+        return <ErrorFallback message={error} statusCode={500} />;
       }
 
     if (!dashboardData?.location) {
@@ -238,7 +231,7 @@ export default function Dashboard() {
         );
     }
 
-    const { location: dashboardLocation, current_weather, alerts, historical_data, forecast_data } = dashboardData;
+    const { location: dashboardLocation, current_weather, alerts, historical_data } = dashboardData;
 
     return (
          <>
@@ -289,7 +282,7 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
 
-                    <Card className='py-6'>
+                    {/* <Card className='py-6'>
                         <CardHeader>
                             <CardTitle> 7-Day Forecast </CardTitle>
                         </CardHeader>
@@ -299,7 +292,7 @@ export default function Dashboard() {
                                 type="forecast"
                             />
                         </CardContent>
-                    </Card>
+                    </Card> */}
                 </div>
             </div>
         </>
