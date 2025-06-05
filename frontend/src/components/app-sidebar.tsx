@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useLocation, Link } from "react-router-dom";
-import { AlertCircle, Cloud, MapPin, Search, Sun, Moon, } from "lucide-react";
+import { AlertCircle, Cloud, MapPin, Search, Sun, Moon, Map } from "lucide-react";
 import AppLogo from "@/components/app-logo";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -62,6 +62,11 @@ const data = {
           icon: MapPin,
           title: "Locations",
           url: "/weather/locations",
+        },
+        {
+          title: "Weather Map",
+          url: "/weather/map",
+          icon: Map,
         },
       ],
     },
