@@ -22,7 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import ProfileDialog from "@/components/ProfileDialog";
+import EditProfileModal from "@/components/edit-profile-modal";
 
 import { toast } from "sonner";
 
@@ -160,7 +160,7 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {/* Profile Link */}
-            <ProfileDialog />
+            <EditProfileModal />
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               <LogOut />
