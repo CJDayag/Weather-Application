@@ -10,7 +10,7 @@ import { CalendarIcon, CircleX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import axios from 'axios';
-import { FaExclamationTriangle } from 'react-icons/fa';
+import ErrorFallback from '@/components/ErrorFallback';
 import { toast } from "sonner";
 
 // Import Recharts components
@@ -229,27 +229,13 @@ export default function WeatherHistory() {
       </div>
     );
   }
-
   if (error) {
-    return (
-      <div className="max-w-md mx-auto my-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md flex items-center space-x-2">
-        <FaExclamationTriangle className="w-6 h-6" />
-        <span>{error}</span>
-      </div>
-    );
+    return <ErrorFallback message={error} statusCode={500} />;
   }
 
   if (!location) {
     return (
-      <Alert variant="destructive" className="max-w-2xl mx-auto mt-8">
-        <AlertDescription>
-          You haven't added any locations yet.{' '}
-          <a href="/weather/add-location" className="underline">
-            Search for a location
-          </a>{' '}
-          to get started.
-        </AlertDescription>
-      </Alert>
+      <ErrorFallback message={error || "Your Token Has Expired, Login again."} statusCode={401} />
     );
   }
 
