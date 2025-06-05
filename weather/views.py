@@ -297,20 +297,34 @@ class WeatherHistoryAPIView(APIView):
     
 class SignupAPIView(APIView):
     permission_classes = [AllowAny]
+    authentication_classes = []  # Explicitly empty to bypass authentication for signup
 
     def post(self, request):
         User = get_user_model()
         try:
+            # Log the raw request data for debugging
+            print(f"Raw request data: {request.data}")
+            print(f"Request headers: {request.headers}")
+            
             data = request.data
             username = data.get('username')
             password = data.get('password')
             first_name = data.get('first_name')
             last_name = data.get('last_name')
             email = data.get('email')
-
+            
+            # Debug log the request data (without the password)
+            print(f"Signup request: username={username}, first_name={first_name}, last_name={last_name}, email={email}")
+            
             # Validate required fields
             if not all([username, password, first_name, last_name, email]):
-                return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
+                missing = []
+                if not username: missing.append("username")
+                if not password: missing.append("password")
+                if not first_name: missing.append("first_name")
+                if not last_name: missing.append("last_name")
+                if not email: missing.append("email")
+                return Response({'error': f'Required fields missing: {", ".join(missing)}'}, status=status.HTTP_400_BAD_REQUEST)
 
             if User.objects.filter(username=username).exists():
                 return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
@@ -338,7 +352,12 @@ class SignupAPIView(APIView):
             }, status=status.HTTP_201_CREATED)
 
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            # Log the full exception details
+            import traceback
+            print(f"Signup error: {str(e)}")
+            print(traceback.format_exc())
+            # Return a 500 error since this is a server-side issue
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
