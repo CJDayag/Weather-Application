@@ -58,8 +58,20 @@ export function SignupPage() {
       });
   
       const csrfData = await csrfResponse.json();
-      const csrfToken = csrfData.csrfToken;
-  
+      const csrfToken = csrfData.csrfToken;      // Create request body and log it for debugging (without password)
+      const requestBody = {
+        username: data.username,
+        password: data.password,
+        first_name: data.firstName,
+        last_name: data.lastName,
+        email: data.email,
+      };
+      
+      console.log("Signup request body:", {
+        ...requestBody,
+        password: "[REDACTED]"
+      });
+      
       const response = await fetch(`${API_URL}${SIGNUP_URL}`, {
         method: "POST",
         headers: {
@@ -67,18 +79,24 @@ export function SignupPage() {
           "X-CSRFToken": csrfToken,  
         },
         credentials: "include",  
-        body: JSON.stringify({
-          username: data.username,
-          password: data.password,
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-        }),
-      });
-  
-      const responseData = await response.json();
-  
+        body: JSON.stringify(requestBody),
+      });      // Attempt to parse response as JSON
+      let responseData;
+      try {
+        responseData = await response.json();
+      } catch (jsonError) {
+        console.error("Failed to parse response as JSON:", jsonError);
+        throw new Error("Server returned an invalid response");
+      }
+      
+      console.log("Signup response:", response.status, responseData);
+      
       if (!response.ok) {
+        // Handle different types of errors
+        if (response.status === 500) {
+          console.error("Server error during signup:", responseData);
+          throw new Error("Server error occurred. Please try again later.");
+        }
         throw new Error(responseData.error || "Failed to create account");
       }
   
