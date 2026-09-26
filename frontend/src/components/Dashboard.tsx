@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from "framer-motion";
 import WeatherChart from '@/components/WeatherChart';
 import CurrentWeatherCard from '@/components/CurrentWeatherCard';
 import AlertsCard from '@/components/AlertsCard';
@@ -12,6 +13,21 @@ import ErrorFallback from '@/components/ErrorFallback';
 import axios from 'axios';
 
 const DASHBOARD_URL = import.meta.env.VITE_DASHBOARD_URL;
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 }
+};
 
 export function useAuth() {
     const getToken = useCallback(async () => {
@@ -212,7 +228,7 @@ export default function Dashboard() {
     if (isLoading) {
         return (
           <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            <div className="animate-spin-slow rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         );
       }    if (error) {
@@ -237,50 +253,65 @@ export default function Dashboard() {
          <>
             {/* Conditional Location Dialog */}
             {showLocationDialog && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-card text-card-foreground p-6 rounded-xl shadow-2xl max-w-sm w-full border border-border"
+                    >
                         <h2 className="text-lg font-bold mb-4">Add Your Location</h2>
-                        <p className="mb-4">
+                        <p className="mb-4 text-muted-foreground">
                             Your account is newly created. Please add a location to get started.
                         </p>
                         <button
                             onClick={() => setShowLocationDialog(false)}
-                            className="px-4 py-2 bg-blue-500 text-white rounded"
+                            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
                         >
                             Close
                         </button>
-                    </div>
+                    </motion.div>
                 </div>
             )}
 
-            <div className="container mx-auto px-4 py-8 space-y-8">
+            <motion.div 
+                className="container mx-auto px-4 py-8 space-y-8"
+                variants={container}
+                initial="hidden"
+                animate="show"
+            >
             
-                <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold mb-6">
+                <motion.div variants={item} className="flex items-center justify-between">
+                    <h1 className="text-4xl font-bold mb-6 tracking-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         Weather Dashboard
                     </h1>
-                </div>
+                </motion.div>
             
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <CurrentWeatherCard 
-                        location={dashboardLocation}
-                        currentWeather={current_weather}
-                    />
-                    <AlertsCard alerts={alerts} />
+                    <motion.div variants={item}>
+                        <CurrentWeatherCard 
+                            location={dashboardLocation}
+                            currentWeather={current_weather}
+                        />
+                    </motion.div>
+                    <motion.div variants={item}>
+                        <AlertsCard alerts={alerts} />
+                    </motion.div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
-                    <Card className='py-6'>
-                        <CardHeader>
-                            <CardTitle>Last 7 Days</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <WeatherChart
-                                data={historical_data}
-                                type="historical"
-                            />
-                        </CardContent>
-                    </Card>
+                    <motion.div variants={item}>
+                        <Card className='py-6 border-border/50 bg-card/50 backdrop-blur-sm'>
+                            <CardHeader>
+                                <CardTitle>Last 7 Days</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <WeatherChart
+                                    data={historical_data}
+                                    type="historical"
+                                />
+                            </CardContent>
+                        </Card>
+                    </motion.div>
 
                     {/* <Card className='py-6'>
                         <CardHeader>
@@ -294,7 +325,7 @@ export default function Dashboard() {
                         </CardContent>
                     </Card> */}
                 </div>
-            </div>
+            </motion.div>
         </>
     );
 }

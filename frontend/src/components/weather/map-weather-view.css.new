@@ -1,0 +1,124 @@
+/* filepath: c:\Users\CJ\Documents\GitHub\Weather-Application\frontend\src\components\weather\map-weather-view.css */
+/* Fix for Leaflet icon paths */
+.leaflet-default-icon-path {
+  background-image: url(https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png);
+}
+.leaflet-default-shadow-path {
+  background-image: url(https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png);
+}
+
+/* Temperature marker classes */
+.temperature-marker-cold {
+  filter: hue-rotate(220deg) brightness(0.8);
+}
+.temperature-marker-cool {
+  filter: hue-rotate(150deg) brightness(1);
+  transition: all 0.3s ease;
+}
+.temperature-marker-warm {
+  filter: hue-rotate(60deg) brightness(1.2);
+  transition: all 0.3s ease;
+}
+.temperature-marker-hot {
+  filter: hue-rotate(30deg) brightness(1.3);
+  transition: all 0.3s ease;
+}
+.temperature-marker-very-hot {
+  filter: hue-rotate(0deg) brightness(1.4);
+  transition: all 0.3s ease;
+}
+
+/* Hover effects for markers */
+.leaflet-marker-icon:hover {
+  transform: scale(1.2);
+  filter: brightness(1.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Custom popup styling */
+.leaflet-popup-content-wrapper {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(8px);
+}
+
+.leaflet-popup-content {
+  margin: 0.75rem;
+  min-width: 180px;
+}
+
+.leaflet-container {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.leaflet-tooltip {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 0.375rem 0.75rem;
+  backdrop-filter: blur(4px);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Make tooltip arrow match the tooltip style */
+.leaflet-tooltip-top:before {
+  border-top-color: rgba(255, 255, 255, 0.95);
+}
+.leaflet-tooltip-bottom:before {
+  border-bottom-color: rgba(255, 255, 255, 0.95);
+}
+.leaflet-tooltip-left:before {
+  border-left-color: rgba(255, 255, 255, 0.95);
+}
+.leaflet-tooltip-right:before {
+  border-right-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Enhanced controls styling */
+.leaflet-control-zoom {
+  border-radius: 0.5rem !important;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+}
+
+/* Tab animation */
+.react-tabs__tab-panel--selected {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Transitions for weather elements */
+.location-detail-panel {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Animation for weather icons on hover */
+.weather-icon {
+  transition: transform 0.2s ease-in-out;
+}
+
+.weather-icon:hover {
+  transform: scale(1.1);
+}

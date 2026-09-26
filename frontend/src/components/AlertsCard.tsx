@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from "framer-motion";
 import { WeatherAlert } from '../types/weather';
 import {
   Card,
@@ -37,10 +38,10 @@ export default function AlertsCard({ alerts }: AlertsCardProps) {
   }, []);
 
   return (
-    <Card className='py-6'>
+    <Card className='py-6 border-border/50 bg-card/50 backdrop-blur-sm h-full'>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-semibold">Weather Alerts</CardTitle>
-        <Button variant="link" asChild>
+        <Button variant="link" asChild className="text-primary hover:text-primary/80">
           <Link to="../weather/alerts">Configure</Link>
         </Button>
       </CardHeader>
@@ -48,18 +49,31 @@ export default function AlertsCard({ alerts }: AlertsCardProps) {
         {fetchedAlerts.length > 0 ? (
           <div className="space-y-3">
             {fetchedAlerts.map((alert, index) => (
-              <Alert key={index} variant="destructive" className="border-l-4 border-red-500">
-                <AlertTitle className="font-bold text-lg">{alert.location}</AlertTitle>
-                <AlertDescription className="space-y-1">
-                  <div className="font-medium">Condition: {alert.condition}</div>
-                  <div className="font-medium">Threshold: {alert.threshold_value}</div>
-                  <div className="font-medium">Status: {alert.is_active ? 'Active' : 'Inactive'}</div>
-                </AlertDescription>
-              </Alert>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Alert variant="destructive" className="border-l-4 border-red-500 bg-destructive/10">
+                  <AlertTitle className="font-bold text-lg">{alert.location}</AlertTitle>
+                  <AlertDescription className="space-y-1">
+                    <div className="font-medium">Condition: {alert.condition}</div>
+                    <div className="font-medium">Threshold: {alert.threshold_value}</div>
+                    <div className="font-medium">Status: {alert.is_active ? 'Active' : 'Inactive'}</div>
+                  </AlertDescription>
+                </Alert>
+              </motion.div>
             ))}
           </div>
         ) : (
-          <div className="text-muted-foreground">No active alerts</div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-muted-foreground text-center py-8"
+          >
+            No active alerts
+          </motion.div>
         )}
       </CardContent>
     </Card>

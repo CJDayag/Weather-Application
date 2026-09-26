@@ -214,10 +214,6 @@ export default function WeatherMapPage() {
       <motion.div variants={itemVariants} className="flex flex-col gap-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Map className="h-6 w-6 text-primary" />
-              <Badge variant="outline" className="text-sm px-2 py-0.5">Interactive</Badge>
-            </div>
             <h2 className="text-3xl font-bold tracking-tight">Global Weather Map</h2>
             <p className="text-muted-foreground mt-1">View real-time weather data across the world</p>
           </div>
@@ -240,7 +236,8 @@ export default function WeatherMapPage() {
                   <SheetDescription>
                     View detailed weather statistics for all locations
                   </SheetDescription>
-                </SheetHeader>                <div className="py-4">
+                </SheetHeader>                
+                <div className="py-4">
                   <div className="space-y-4">
                     <div className="border rounded-lg p-3">
                       <h4 className="font-medium mb-2">Temperature Overview</h4>
@@ -329,7 +326,8 @@ export default function WeatherMapPage() {
                 <DropdownMenuItem onClick={() => setShowTips(!showTips)}>
                   <Eye className="h-4 w-4 mr-2" />
                   {showTips ? "Hide Tips" : "Show Tips"}
-                </DropdownMenuItem>                <DropdownMenuItem onClick={() => setShowDetailPanel(!showDetailPanel)}>
+                </DropdownMenuItem>                
+                <DropdownMenuItem onClick={() => setShowDetailPanel(!showDetailPanel)}>
                   <PanelRight className="h-4 w-4 mr-2" />
                   {showDetailPanel ? "Hide Detail Panel" : "Show Detail Panel"}
                 </DropdownMenuItem>
@@ -361,14 +359,15 @@ export default function WeatherMapPage() {
             initial={{ scale: 0.95, opacity: 0 }} 
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="grid grid-cols-1 lg:grid-cols-4 gap-4"
-          >
-            <div className={`${showDetailPanel ? 'lg:col-span-3' : 'lg:col-span-4'}`}>
-              <Card className="py-4 shadow-lg border border-border/80">                <CardHeader className="pb-2">
+            transition={{ duration: 0.5 }}            
+            className="grid grid-cols-1 lg:grid-cols-5 gap-4"
+          >            
+          <div className={`${showDetailPanel ? 'lg:col-span-3' : 'lg:col-span-5'}`}>
+              <Card className={`py-4 shadow-lg border border-border/80 ${showDetailPanel ? 'max-w-[700px]' : ''}`}>
+              <CardHeader className="pb-2">
                   <div className="flex justify-between items-center mb-2">
                     <div>
-                      <h3 className="text-sm font-medium">Map View</h3>
+                      <h3 className="font-bold lg:text-lg">Map View</h3>
                     </div>
                     {showTips && (
                       <Badge variant="outline" className="hidden sm:flex">
@@ -396,7 +395,8 @@ export default function WeatherMapPage() {
                           <span className="hidden sm:inline">Terrain</span>
                         </TabsTrigger>
                       </TabsList>
-                    </div>                    <TabsContent value="standard" className="m-0">
+                    </div>                    
+                    <TabsContent value="standard" className="m-0">
                       <MapWeatherView tileLayer={MAP_LAYERS.standard} onLocationSelect={handleLocationSelect} />
                     </TabsContent>
                     <TabsContent value="satellite" className="m-0">
@@ -409,22 +409,21 @@ export default function WeatherMapPage() {
                 </CardContent>
               </Card>
             </div>
-            
-            {showDetailPanel && (
+              {showDetailPanel && (
               <motion.div 
-                className="lg:col-span-1"
+                className="lg:col-span-2"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-              >                
-              <Card className="py-4 h-full shadow-lg border border-border/80">
+                transition={{ duration: 0.3 }}              >                
+              <Card className="py-4 h-full shadow-lg border border-border/80 w-full">
                   <CardHeader className="px-6">
                     <CardTitle className="text-lg">Weather Details</CardTitle>
                     <CardDescription>Selected location information</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4 px-6">
                     {selectedLocation ? (
-                      <div className="space-y-4">                        <div className="flex flex-col items-center pb-4 border-b">
+                      <div className="space-y-4">
+                        <div className="flex flex-col items-center pb-4 border-b">
                           <h2 className="text-2xl font-bold mb-1">{selectedLocation.name}</h2>
                           {selectedLocation.description && (
                             <div className="flex items-center gap-2">
